@@ -21,20 +21,9 @@ import tensorflow as tf
 from tensorflow.contrib.learn.python.learn.estimators.model_fn import ModeKeys as Modes
 
 import importlib
-import facenet
 from tensorflow.python.framework import ops
 import tensorflow.contrib.slim as slim
 
-import argparse
-import lfw_custom_data as lfw
-import h5py
-import math
-from tensorflow.python.ops import data_flow_ops
-from tensorflow.python.ops import array_ops
-from datetime import datetime
-import os.path
-import time
-import sys
 import random
 import numpy as np
 
@@ -94,6 +83,21 @@ def input_fn(filename, batch_size=100):
 
 def get_input_fn(filename, batch_size=100):
     return lambda: input_fn(filename, batch_size)
+
+def center_loss(features, label, alfa, nrof_classes):
+    """Center loss based on the paper "A Discriminative Feature Learning Approach for Deep Face Recognition"
+       (http://ydwen.github.io/papers/WenECCV16.pdf)
+    """
+    nrof_features = features.get_shape()[1]
+    centers = tf.get_variable('centers', [nrof_classes, nrof_features], dtype=tf.float32,
+        initializer=tf.constant_initializer(0), trainable=False)
+    label = tf.reshape(label, [-1])
+    centers_batch = tf.gather(centers, label)
+    diff = (1 - alfa) * (centers_batch - features)
+    centers = tf.scatter_sub(centers, label, diff)
+    with tf.control_dependencies([centers]):
+        loss = tf.reduce_mean(tf.square(features - centers_batch))
+    return loss, centers
 
 
 
@@ -193,7 +197,7 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     tf.add_to_collection(tf.GraphKeys.REGULARIZATION_LOSSES, prelogits_norm * 0.0)
 
     # Add center loss
-    prelogits_center_loss, _ = facenet.center_loss(prelogits, labels, CETNER_LOSS_ALFA, nrof_classes)
+    prelogits_center_loss, _ = center_loss(prelogits, labels, CETNER_LOSS_ALFA, nrof_classes)
     tf.add_to_collection(tf.GraphKeys.REGULARIZATION_LOSSES, prelogits_center_loss * CENTER_LOSS_FACTOR)
 
     learning_rate = tf.train.exponential_decay(learning_rate_placeholder, global_step,1*EPOCH_SIZE, 0.1, staircase=True)
