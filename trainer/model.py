@@ -415,7 +415,7 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     tf.add_to_collection(tf.GraphKeys.REGULARIZATION_LOSSES, prelogits_norm * 0.0)
 
     # Add center loss
-    prelogits_center_loss, _ = center_loss(prelogits, labels, CETNER_LOSS_ALFA, nrof_classes)
+    prelogits_center_loss, _ = center_loss(prelogits, labels, CETNER_LOSS_ALFA, NUMBER_OF_CLASSES)
     tf.add_to_collection(tf.GraphKeys.REGULARIZATION_LOSSES, prelogits_center_loss * CENTER_LOSS_FACTOR)
 
     learning_rate = tf.train.exponential_decay(learning_rate_placeholder, global_step,1*EPOCH_SIZE, 0.1, staircase=True)
