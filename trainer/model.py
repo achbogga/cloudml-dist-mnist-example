@@ -418,8 +418,8 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     prelogits_center_loss, _ = center_loss(prelogits, labels, CETNER_LOSS_ALFA, NUMBER_OF_CLASSES)
     tf.add_to_collection(tf.GraphKeys.REGULARIZATION_LOSSES, prelogits_center_loss * CENTER_LOSS_FACTOR)
 
-    learning_rate = tf.train.exponential_decay(learning_rate_placeholder, global_step,1*EPOCH_SIZE, 0.1, staircase=True)
-    tf.summary.scalar('learning_rate', learning_rate)
+    #learning_rate = tf.train.exponential_decay(learning_rate_placeholder, global_step,1*EPOCH_SIZE, 0.1, staircase=True)
+    #tf.summary.scalar('learning_rate', learning_rate)
 
     # Calculate the average cross entropy loss across the batch
     cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=labels, logits=logits, name='cross_entropy_per_example')
