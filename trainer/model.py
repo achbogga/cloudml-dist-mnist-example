@@ -398,7 +398,7 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     range_size = array_ops.shape(labels)[0]
     learning_rate_placeholder = tf.placeholder(tf.float32, name='learning_rate')
             
-    phase_train_placeholder = tf.placeholder_with_default(True, name='phase_train')
+    phase_train_placeholder = tf.placeholder_with_default(True, shape=(), name='phase_train')
     labels_placeholder = tf.placeholder(tf.int32, shape=(None,1), name='labels')
     # Build the inference graph
     prelogits, _ = inference(input_layer, 0.4, phase_train=phase_train_placeholder, bottleneck_layer_size=EMBEDDING_SIZE, weight_decay=5e-4)
