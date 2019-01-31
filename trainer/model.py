@@ -179,9 +179,7 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     phase_train_placeholder = tf.placeholder(tf.bool, name='phase_train')
     labels_placeholder = tf.placeholder(tf.int32, shape=(None,1), name='labels')
     # Build the inference graph
-    prelogits, _ = network.inference(input_layer, 0.4, 
-        phase_train=phase_train_placeholder, bottleneck_layer_size=EMBEDDING_SIZE, 
-        weight_decay=5e-4)
+    prelogits, _ = network.inference(input_layer, 0.4, phase_train=phase_train_placeholder, bottleneck_layer_size=EMBEDDING_SIZE, weight_decay=5e-4)
     logits = slim.fully_connected(prelogits, NUMBER_OF_CLASSES, activation_fn=None, 
             weights_initializer=slim.initializers.xavier_initializer(WEIGHT_DECAY), 
             weights_regularizer=slim.l2_regularizer(WEIGHT_DECAY),
@@ -198,13 +196,11 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     prelogits_center_loss, _ = facenet.center_loss(prelogits, labels, CETNER_LOSS_ALFA, nrof_classes)
     tf.add_to_collection(tf.GraphKeys.REGULARIZATION_LOSSES, prelogits_center_loss * CENTER_LOSS_FACTOR)
 
-    learning_rate = tf.train.exponential_decay(learning_rate_placeholder, global_step,
-        1*EPOCH_SIZE, 0.1, staircase=True)
+    learning_rate = tf.train.exponential_decay(learning_rate_placeholder, global_step,1*EPOCH_SIZE, 0.1, staircase=True)
     tf.summary.scalar('learning_rate', learning_rate)
 
     # Calculate the average cross entropy loss across the batch
-    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-        labels=labels, logits=logits, name='cross_entropy_per_example')
+    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=labels, logits=logits, name='cross_entropy_per_example')
     cross_entropy_mean = tf.reduce_mean(cross_entropy, name='cross_entropy')
     tf.add_to_collection('losses', cross_entropy_mean)
     
