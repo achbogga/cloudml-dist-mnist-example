@@ -23,6 +23,7 @@ from tensorflow.contrib.learn.python.learn.estimators.model_fn import ModeKeys a
 import importlib
 from tensorflow.python.framework import ops
 import tensorflow.contrib.slim as slim
+from tensorflow.python.ops import array_ops
 
 import random
 import numpy as np
