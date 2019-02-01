@@ -394,8 +394,8 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     input_layer = adjust_image(features['inputs'])
 
     # Create a queue that produces indices into the image_list and label_list 
-    if not (None in labels):
-        labels = ops.convert_to_tensor(labels, dtype=tf.int32)
+    #if not (None in labels):
+    #    labels = ops.convert_to_tensor(labels, dtype=tf.int32)
     range_size = array_ops.shape(labels)[0]
     learning_rate_placeholder = tf.placeholder(tf.float32, name='learning_rate')
             
