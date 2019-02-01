@@ -40,7 +40,7 @@ NUMBER_OF_CLASSES = 10
 CENTER_LOSS_FACTOR = 0.0
 CETNER_LOSS_ALFA = 0.95
 WEIGHT_DECAY = 5e-4
-EPOCH_SIZE = 60000
+EPOCH_SIZE = 55000
 
 # Inception-Resnet-A
 def block35(net, scale=1.0, activation_fn=tf.nn.relu, scope=None, reuse=None):
@@ -289,7 +289,7 @@ def read_and_decode(filename_queue):
     return image, label
 
 
-def input_fn(filename, batch_size=100):
+def input_fn(filename, batch_size=1000):
     filename_queue = tf.train.string_input_producer([filename])
 
     image, label = read_and_decode(filename_queue)
@@ -300,7 +300,7 @@ def input_fn(filename, batch_size=100):
     return {'inputs': images}, labels
 
 
-def get_input_fn(filename, batch_size=100):
+def get_input_fn(filename, batch_size=1000):
     return lambda: input_fn(filename, batch_size)
 
 def center_loss(features, label, alfa, nrof_classes):
@@ -396,7 +396,7 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     # Create a queue that produces indices into the image_list and label_list 
     #if not (None in labels):
     #    labels = ops.convert_to_tensor(labels, dtype=tf.int32)
-    range_size = array_ops.shape(labels)[0]
+    #range_size = array_ops.shape(labels)[0]
     learning_rate_placeholder = tf.placeholder(tf.float32, name='learning_rate')
             
     phase_train_placeholder = tf.placeholder_with_default(True, shape=(), name='phase_train')
