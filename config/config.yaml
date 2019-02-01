@@ -2,6 +2,6 @@ trainingInput:
   scaleTier: CUSTOM
   masterType: standard_p100
   workerType: standard_p100
-  parameterServerType: large_model
+  parameterServerType: standard
   workerCount: 9
   parameterServerCount: 3

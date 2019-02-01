@@ -393,14 +393,14 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     # Input Layer
     input_layer = adjust_image(features['inputs'])
 
+    '''
     # Create a queue that produces indices into the image_list and label_list 
-    #if not (None in labels):
-    #    labels = ops.convert_to_tensor(labels, dtype=tf.int32)
-    #range_size = array_ops.shape(labels)[0]
+    labels = ops.convert_to_tensor(labels, dtype=tf.int32)
+    range_size = array_ops.shape(labels)[0]
     learning_rate_placeholder = tf.placeholder(tf.float32, name='learning_rate')
-            
+    '''        
     phase_train_placeholder = tf.placeholder_with_default(True, shape=(), name='phase_train')
-    labels_placeholder = tf.placeholder(tf.int32, shape=(None,1), name='labels')
+    #labels_placeholder = tf.placeholder(tf.int32, shape=(None,1), name='labels')
     # Build the inference graph
     prelogits, _ = inference(input_layer, 0.4, phase_train=phase_train_placeholder, bottleneck_layer_size=EMBEDDING_SIZE, weight_decay=5e-4)
     logits = slim.fully_connected(prelogits, NUMBER_OF_CLASSES, activation_fn=None, 
@@ -408,6 +408,7 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
                     weights_regularizer=slim.l2_regularizer(WEIGHT_DECAY),
                     scope='Logits', reuse=False)
 
+    '''
     embeddings = tf.nn.l2_normalize(prelogits, 1, 1e-10, name='embeddings')
 
     # Norm for the prelogits
@@ -433,6 +434,7 @@ def _inception_resnet_v1_model_fn(features, labels, mode):
     # Calculate the total losses
     regularization_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
     total_loss = tf.add_n([cross_entropy_mean] + regularization_losses, name='total_loss')
+    '''
     # Define operations
     if mode in (Modes.INFER, Modes.EVAL):
         predicted_indices = tf.argmax(input=logits, axis=1)
